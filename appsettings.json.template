@@ -1,0 +1,14 @@
+{
+    "ConnectionStrings": { "Default": "Host=DB_HOST;Port=DB_PORT;Username=DB_USER;Password=DB_PASSWORD;Database=DB_DATABASE" },
+    "Google": {
+        "ProjectId": "GOOGLE_PROJECTID",
+        "LocationId": "GOOGLE_LOCATIONID",
+        "KeyRingId": "GOOGLE_KEYRINGID",
+        "CryptoKeyId": "GOOGLE_KEYID"
+    },
+    "Logging": {
+        "LogLevel": {
+            "NCoreUtils.OAuth2": "Trace"
+        }
+    }
+}
