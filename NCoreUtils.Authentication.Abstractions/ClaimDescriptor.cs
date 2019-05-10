@@ -9,6 +9,24 @@ namespace NCoreUtils.Authentication
     [Serializable]
     public sealed class ClaimDescriptor : IEquatable<ClaimDescriptor>, ISerializable
     {
+        public static bool operator==(ClaimDescriptor a, ClaimDescriptor b)
+        {
+            if (object.ReferenceEquals(null, a))
+            {
+                return object.ReferenceEquals(null, b);
+            }
+            return a.Equals(b);
+        }
+
+        public static bool operator!=(ClaimDescriptor a, ClaimDescriptor b)
+        {
+            if (object.ReferenceEquals(null, a))
+            {
+                return !object.ReferenceEquals(null, b);
+            }
+            return !a.Equals(b);
+        }
+
         public string Type { get; }
 
         public string Value { get; }
@@ -40,6 +58,14 @@ namespace NCoreUtils.Authentication
 
         public bool Equals(ClaimDescriptor other)
         {
+            if (object.ReferenceEquals(null, other))
+            {
+                return false;
+            }
+            if (object.ReferenceEquals(this, other))
+            {
+                return true;
+            }
             return Type == other.Type
                 && Value == other.Value
                 && ValueType == other.ValueType

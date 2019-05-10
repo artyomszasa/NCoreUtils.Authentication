@@ -2,3 +2,5 @@
 
 NCoreUtils*/bin
 NCoreUtils*/obj
+NCoreUtils.Authentication.Unit/report
+NCoreUtils.Authentication.Unit/coverage.opencover.xml

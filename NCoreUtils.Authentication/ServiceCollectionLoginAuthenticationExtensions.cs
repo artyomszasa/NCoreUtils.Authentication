@@ -9,10 +9,8 @@ namespace NCoreUtils.Authentication
         public static IServiceCollection AddLoginAuthentication<TAuthentication>(this IServiceCollection services, Action<LoginAuthenticationBuilder> init)
             where TAuthentication : class, ILoginAuthentication
         {
-            var builder = new LoginAuthenticationBuilder(services);
-            init(builder);
             return services
-                .AddSingleton(new LoginCollection(builder._loginTypes.ToImmutableDictionary()))
+                .AddLoginAuthenticator(init)
                 .AddScoped<ILoginAuthentication, TAuthentication>();
         }
 

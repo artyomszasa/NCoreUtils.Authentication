@@ -45,7 +45,7 @@ namespace NCoreUtils.Authentication
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerStepThrough]
-        public bool Equals(LoginRequest other) => StringComparer.OrdinalIgnoreCase.Equals(LoginName, other.LoginName) && Passcode.Equals(other.Passcode);
+        public bool Equals(LoginRequest other) => StringComparer.OrdinalIgnoreCase.Equals(LoginName, other.LoginName) && Passcode == other.Passcode;
 
         [DebuggerStepThrough]
         public override int GetHashCode()

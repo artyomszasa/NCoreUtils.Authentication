@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -26,6 +27,7 @@ namespace NCoreUtils.Authentication
 
         public bool TryGetValue(string key, out (Type type, object[] args) value) => _loginTypes.TryGetValue(key, out value);
 
+        [ExcludeFromCodeCoverage]
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

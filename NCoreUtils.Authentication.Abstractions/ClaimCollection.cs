@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Claims;
@@ -47,6 +48,7 @@ namespace NCoreUtils.Authentication
 
         public IEnumerator<ClaimDescriptor> GetEnumerator() => _claims.GetEnumerator();
 
+        [ExcludeFromCodeCoverage]
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
