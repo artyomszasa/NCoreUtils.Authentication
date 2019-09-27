@@ -28,7 +28,7 @@ namespace NCoreUtils.Authentication
             return message;
         }
 
-        protected override async Task<string> FormatInvalidAccessTokenResponseMessage(HttpResponseMessage response)
+        protected override async ValueTask<string> FormatInvalidAccessTokenResponseMessage(HttpResponseMessage response)
         {
             if (null != response.Content && response.Content.Headers.ContentType.IsJson())
             {

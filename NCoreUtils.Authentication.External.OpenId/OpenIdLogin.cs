@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+// using NCoreUtils.Authentication.Internal;
 using NCoreUtils.Authentication.OAuth2;
 
 namespace NCoreUtils.Authentication.OpenId

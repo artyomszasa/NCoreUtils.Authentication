@@ -6,6 +6,6 @@ namespace NCoreUtils.Authentication
 {
     public interface ILoginAuthentication
     {
-        Task<ClaimsPrincipal> AuthenticateAsync(string name, string passcode, CancellationToken cancellationToken = default(CancellationToken));
+        ValueTask<ClaimsPrincipal> AuthenticateAsync(string name, string passcode, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

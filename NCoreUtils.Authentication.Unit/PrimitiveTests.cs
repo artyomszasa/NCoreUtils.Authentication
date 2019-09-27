@@ -27,10 +27,10 @@ namespace NCoreUtils.Authentication.Unit
         {
             public bool Called { get; private set; }
 
-            public Task<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default)
+            public ValueTask<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default)
             {
                 Called = true;
-                return Task.FromResult(new ClaimCollection(null));
+                return new ValueTask<ClaimCollection>(new ClaimCollection(null));
             }
         }
 

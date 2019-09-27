@@ -1,5 +1,5 @@
 .vscode
-
+.ionide
 NCoreUtils*/bin
 NCoreUtils*/obj
 NCoreUtils.Authentication.Unit/report

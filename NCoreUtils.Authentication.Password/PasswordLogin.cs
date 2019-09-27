@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+// using NCoreUtils.Authentication.Internal;
 using NCoreUtils.Authentication.Local;
 
 namespace NCoreUtils.Authentication
@@ -40,7 +41,7 @@ namespace NCoreUtils.Authentication
             _options = options ?? PasswordLoginOptions.Default;
         }
 
-        public override async Task<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default(CancellationToken))
+        public override async ValueTask<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!TryExtractParameters(passcode, out var email, out var password))
             {
@@ -65,7 +66,7 @@ namespace NCoreUtils.Authentication
             {
                 if (PasswordLogin.CheckPasswordHash(localUser, password))
                 {
-                    var claims = await GetClaimsAsync(localUser).ToList(cancellationToken).ConfigureAwait(false);
+                    var claims = await GetClaimsAsync(localUser).ToListAsync(cancellationToken).ConfigureAwait(false);
                     return new ClaimCollection(claims, "login", ClaimTypes.Role, ClaimTypes.Name);
                 }
                 if (_options.IsSensitiveLoggingEnabled)

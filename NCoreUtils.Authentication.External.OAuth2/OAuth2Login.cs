@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+// using NCoreUtils.Authentication.Internal;
 using NCoreUtils.Authentication.OAuth2;
 using Newtonsoft.Json;
 
@@ -113,7 +114,7 @@ namespace NCoreUtils.Authentication.OAuth2
 
         protected virtual HttpClient CreateHttpClient() => new HttpClient();
 
-        protected virtual async Task<string> FormatInvalidResponseMessage(HttpResponseMessage response)
+        protected virtual async ValueTask<string> FormatInvalidResponseMessage(HttpResponseMessage response)
         {
             if (null != response.Content && response.Content.Headers.ContentType.IsJson())
             {
@@ -123,9 +124,9 @@ namespace NCoreUtils.Authentication.OAuth2
             return $"Server responded with status code {response.StatusCode}.";
         }
 
-        protected virtual Task<string> FormatInvalidAccessTokenResponseMessage(HttpResponseMessage response) => FormatInvalidResponseMessage(response);
+        protected virtual ValueTask<string> FormatInvalidAccessTokenResponseMessage(HttpResponseMessage response) => FormatInvalidResponseMessage(response);
 
-        protected virtual async Task<TAccessTokenResponse> GetAccessTokenAsync(string code, CancellationToken cancellationToken)
+        protected virtual async ValueTask<TAccessTokenResponse> GetAccessTokenAsync(string code, CancellationToken cancellationToken)
         {
             using (var request = CreateAccessTokenRequestMessage(code))
             using (var client = CreateHttpClient())
@@ -146,9 +147,9 @@ namespace NCoreUtils.Authentication.OAuth2
             }
         }
 
-        protected virtual Task<string> FormatInvalidUserInfoResponseMessage(HttpResponseMessage response) => FormatInvalidResponseMessage(response);
+        protected virtual ValueTask<string> FormatInvalidUserInfoResponseMessage(HttpResponseMessage response) => FormatInvalidResponseMessage(response);
 
-        protected virtual async Task<TUserInfoResponse> GetUserInfoAsync(string accessToken, CancellationToken cancellationToken)
+        protected virtual async ValueTask<TUserInfoResponse> GetUserInfoAsync(string accessToken, CancellationToken cancellationToken)
         {
             using (var request = CreateUserInfoRequestMessage(accessToken))
             using (var client = CreateHttpClient())
@@ -182,7 +183,7 @@ namespace NCoreUtils.Authentication.OAuth2
             }.ToAsyncEnumerable();
         }
 
-        public async Task<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default(CancellationToken))
+        public async ValueTask<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default(CancellationToken))
         {
             string accessToken;
             if (passcode.StartsWith($"{AccessTokenPrefix}!"))
@@ -217,7 +218,7 @@ namespace NCoreUtils.Authentication.OAuth2
                 Logger.LogDebug("Unable to retrieve user info for passcode = {0}", passcode);
                 return null;
             }
-            var claims = await GetClaimsAsync(userInfoResponse).ToList(cancellationToken).ConfigureAwait(false);
+            var claims = await GetClaimsAsync(userInfoResponse).ToListAsync(cancellationToken).ConfigureAwait(false);
             return new ClaimCollection(claims, "login", ClaimTypes.Name, ClaimTypes.Role);
         }
     }

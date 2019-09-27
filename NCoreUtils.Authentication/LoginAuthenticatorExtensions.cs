@@ -1,21 +1,22 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+// using NCoreUtils.Authentication.Internal;
 
 namespace NCoreUtils.Authentication
 {
     public static class LoginAuthenticatorExtensions
     {
-        public static Task<ClaimCollection> AuthenticateAsync(
+        public static ValueTask<ClaimCollection> AuthenticateAsync(
             this LoginAuthenticator loginAuthenticator,
             LoginRequest loginRequest,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return loginAuthenticator.AuthenticateAsync(new [] { loginRequest })
-                .FirstOrDefault(cancellationToken);
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public static Task<ClaimCollection> AuthenticateAsync(
+        public static ValueTask<ClaimCollection> AuthenticateAsync(
             this LoginAuthenticator loginAuthenticator,
             string loginName,
             string passcode,

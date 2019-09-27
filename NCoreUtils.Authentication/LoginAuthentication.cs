@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+// using NCoreUtils.Authentication.Internal;
 
 namespace NCoreUtils.Authentication
 {
@@ -23,7 +24,7 @@ namespace NCoreUtils.Authentication
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<ClaimsPrincipal> AuthenticateAsync(string name, string passcode, CancellationToken cancellationToken = default(CancellationToken))
+        public async ValueTask<ClaimsPrincipal> AuthenticateAsync(string name, string passcode, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -37,7 +38,7 @@ namespace NCoreUtils.Authentication
                     claims.AuthenticationType,
                     claims.NameClaimType,
                     claims.RoleClaimType))
-                .ToList(cancellationToken);
+                .ToListAsync(cancellationToken);
 
             if (identities.Count > 0)
             {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+// using NCoreUtils.Authentication.Internal;
 
 namespace NCoreUtils.Authentication.Local
 {
@@ -43,6 +44,6 @@ namespace NCoreUtils.Authentication.Local
             return claims.ToAsyncEnumerable().Concat(roleClaims);
         }
 
-        public abstract Task<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract ValueTask<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

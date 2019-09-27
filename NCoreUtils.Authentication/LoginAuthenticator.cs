@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NCoreUtils.Linq;
 
 namespace NCoreUtils.Authentication
 {
@@ -22,7 +22,7 @@ namespace NCoreUtils.Authentication
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public IAsyncEnumerable<ClaimCollection> AuthenticateAsync(LoginRequest[] loginRequests)
+        public async IAsyncEnumerable<ClaimCollection> AuthenticateAsync(LoginRequest[] loginRequests)
         {
             var logins = new List<(Type type, object[] args, string loginName, string passcode)>(loginRequests.Length);
             foreach (var loginRequest in loginRequests)
@@ -36,34 +36,37 @@ namespace NCoreUtils.Authentication
                     _logger.LogWarning("No login registered for name {0}, skipping.", loginRequest.LoginName);
                 }
             }
-            return logins
-                .ToAsyncEnumerable()
-                .SelectAsync(async (data, cancellationToken) => {
-                    _logger.LogTrace("Authenticating with {0} login.", data.loginName);
+            foreach (var data in logins)
+            {
+                _logger.LogTrace("Authenticating with {0} login.", data.loginName);
+                ClaimCollection subresult;
+                try
+                {
+                    var login = (ILogin)ActivatorUtilities.CreateInstance(_serviceProvider, data.type, data.args);
                     try
                     {
-                        var login = (ILogin)ActivatorUtilities.CreateInstance(_serviceProvider, data.type, data.args);
-                        try
+                        var claims = await login.LoginAsync(data.passcode, CancellationToken.None).ConfigureAwait(false);
+                        if (null == claims)
                         {
-                            var claims = await login.LoginAsync(data.passcode, cancellationToken).ConfigureAwait(false);
-                            if (null == claims)
-                            {
-                                _logger.LogTrace("Authentication failed for {0} login.", data.loginName);
-                            }
-                            return claims;
+                            _logger.LogTrace("Authentication failed for {0} login.", data.loginName);
                         }
-                        finally
-                        {
-                            (login as IDisposable)?.Dispose();
-                        }
+                        subresult = claims;
                     }
-                    catch (Exception exn)
+                    finally
                     {
-                        _logger.LogError(exn, "Authentication failed for {0} login due to error.", data.loginName);
-                        return null;
+                        (login as IDisposable)?.Dispose();
                     }
-                })
-                .Where(claims => null != claims);
+                }
+                catch (Exception exn)
+                {
+                    _logger.LogError(exn, "Authentication failed for {0} login due to error.", data.loginName);
+                    subresult = null;
+                }
+                if (null != subresult)
+                {
+                    yield return subresult;
+                }
+            }
         }
     }
 }

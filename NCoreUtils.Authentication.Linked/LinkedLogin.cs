@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+// using NCoreUtils.Authentication.Internal;
 using NCoreUtils.Authentication.Linked;
 using NCoreUtils.Authentication.Local;
 
@@ -68,7 +69,7 @@ namespace NCoreUtils.Authentication
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
-        public override async Task<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default(CancellationToken))
+        public override async ValueTask<ClaimCollection> LoginAsync(string passcode, CancellationToken cancellationToken = default(CancellationToken))
         {
             var login = (ILogin)ActivatorUtilities.CreateInstance(_serviceProvider, _externalLoginType, _externalLoginArguments);
             try
@@ -90,7 +91,7 @@ namespace NCoreUtils.Authentication
                 }
                 if (user is IUser<TUserId> localUser)
                 {
-                    var localClaims = await GetClaimsAsync(localUser, !claims.HasClaim(c => c.Type == claims.NameClaimType)).ToList(cancellationToken).ConfigureAwait(false);
+                    var localClaims = await GetClaimsAsync(localUser, !claims.HasClaim(c => c.Type == claims.NameClaimType)).ToListAsync(cancellationToken).ConfigureAwait(false);
                     var externalRoleType = claims.RoleClaimType;
                     var externalNameType = claims.NameClaimType;
                     foreach (var claim in claims)

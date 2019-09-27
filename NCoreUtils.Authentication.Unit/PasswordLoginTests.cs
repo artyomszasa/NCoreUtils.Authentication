@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+// using NCoreUtils.Authentication.Internal;
 using Xunit;
 
 namespace NCoreUtils.Authentication.Unit
@@ -31,9 +32,9 @@ namespace NCoreUtils.Authentication.Unit
             public List<User> Users { get; } = new List<User>();
 
 
-            public Task<IUser<int>> FindByEmailAsync(string email, CancellationToken cancellationToken = default)
+            public ValueTask<IUser<int>> FindByEmailAsync(string email, CancellationToken cancellationToken = default)
             {
-                return Task.FromResult<IUser<int>>(Users.FirstOrDefault(u => u.Email == email));
+                return new ValueTask<IUser<int>>(Users.FirstOrDefault(u => u.Email == email));
             }
 
             public IAsyncEnumerable<string> GetPermissionsAsync(IUser<int> user)
